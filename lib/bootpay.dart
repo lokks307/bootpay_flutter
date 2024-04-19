@@ -1,18 +1,14 @@
-
 import 'package:bootpay/config/bootpay_config.dart';
 
 import 'model/stat_item.dart';
 import 'shims/bootpay_platform.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'bootpay_api.dart';
 import 'model/payload.dart';
 import 'package:http/http.dart' as http;
 
-
 typedef void BootpayProgressBarCallback(bool isShow);
-// typedef void ShowHeaderCallback(bool showHeader);
 
 typedef BootpayDefaultCallback = void Function(String data);
 typedef BootpayConfirmCallback = bool Function(String data);
@@ -30,30 +26,35 @@ class Bootpay extends BootpayApi {
 
   late BootpayPlatform _platform;
 
-
-  @override
-  String applicationId(String webApplicationId, String androidApplicationId, String iosApplicationId) {
-    return _platform.applicationId(webApplicationId, androidApplicationId, iosApplicationId);
+  String applicationId(
+    String webApplicationId,
+    String androidApplicationId,
+    String iosApplicationId,
+  ) {
+    return _platform.applicationId(
+      webApplicationId,
+      androidApplicationId,
+      iosApplicationId,
+    );
   }
 
   @override
-  void requestPayment(
-      {Key? key,
-        BuildContext? context,
-        Payload? payload,
-        bool? showCloseButton,
-        Widget? closeButton,
-        BootpayDefaultCallback? onCancel,
-
-        BootpayDefaultCallback? onError,
-        BootpayCloseCallback? onClose,
-        BootpayDefaultCallback? onIssued,
-        BootpayConfirmCallback? onConfirm,
-        BootpayAsyncConfirmCallback? onConfirmAsync,
-        BootpayDefaultCallback? onDone,
-        String? userAgent,
-        int? requestType}) {
-
+  void requestPayment({
+    Key? key,
+    BuildContext? context,
+    Payload? payload,
+    bool? showCloseButton,
+    Widget? closeButton,
+    BootpayDefaultCallback? onCancel,
+    BootpayDefaultCallback? onError,
+    BootpayCloseCallback? onClose,
+    BootpayDefaultCallback? onIssued,
+    BootpayConfirmCallback? onConfirm,
+    BootpayAsyncConfirmCallback? onConfirmAsync,
+    BootpayDefaultCallback? onDone,
+    String? userAgent,
+    int? requestType,
+  }) {
     _platform.requestPayment(
         context: context,
         payload: payload,
@@ -66,28 +67,27 @@ class Bootpay extends BootpayApi {
         onConfirm: onConfirm,
         onConfirmAsync: onConfirmAsync,
         onDone: onDone,
-
-        requestType: requestType
-    );
+        requestType: requestType);
   }
 
   @override
-  void requestSubscription(
-      {Key? key,
-        BuildContext? context,
-        Payload? payload,
-        bool? showCloseButton,
-        Widget? closeButton,
-        BootpayDefaultCallback? onCancel,
-        BootpayDefaultCallback? onError,
-        BootpayCloseCallback? onClose,
-        BootpayDefaultCallback? onIssued,
-        BootpayConfirmCallback? onConfirm,
-        BootpayAsyncConfirmCallback? onConfirmAsync,
-        BootpayDefaultCallback? onDone,
-        int? requestType}) {
-
-    if(payload?.subscriptionId == null || payload?.subscriptionId?.length == 0) {
+  void requestSubscription({
+    Key? key,
+    BuildContext? context,
+    Payload? payload,
+    bool? showCloseButton,
+    Widget? closeButton,
+    BootpayDefaultCallback? onCancel,
+    BootpayDefaultCallback? onError,
+    BootpayCloseCallback? onClose,
+    BootpayDefaultCallback? onIssued,
+    BootpayConfirmCallback? onConfirm,
+    BootpayAsyncConfirmCallback? onConfirmAsync,
+    BootpayDefaultCallback? onDone,
+    int? requestType,
+  }) {
+    if (payload?.subscriptionId == null ||
+        payload?.subscriptionId?.length == 0) {
       payload?.subscriptionId = payload.orderId ?? "";
     }
 
@@ -103,27 +103,27 @@ class Bootpay extends BootpayApi {
         onConfirm: onConfirm,
         onConfirmAsync: onConfirmAsync,
         onDone: onDone,
-        requestType: requestType
-    );
+        requestType: requestType);
   }
 
   @override
-  void requestAuthentication(
-      {Key? key,
-        BuildContext? context,
-        Payload? payload,
-        bool? showCloseButton,
-        Widget? closeButton,
-        BootpayDefaultCallback? onCancel,
-        BootpayDefaultCallback? onError,
-        BootpayCloseCallback? onClose,
-        BootpayDefaultCallback? onIssued,
-        BootpayConfirmCallback? onConfirm,
-        BootpayAsyncConfirmCallback? onConfirmAsync,
-        BootpayDefaultCallback? onDone,
-        int? requestType}) {
-
-    if(payload?.subscriptionId == null || payload?.subscriptionId?.length == 0) {
+  void requestAuthentication({
+    Key? key,
+    BuildContext? context,
+    Payload? payload,
+    bool? showCloseButton,
+    Widget? closeButton,
+    BootpayDefaultCallback? onCancel,
+    BootpayDefaultCallback? onError,
+    BootpayCloseCallback? onClose,
+    BootpayDefaultCallback? onIssued,
+    BootpayConfirmCallback? onConfirm,
+    BootpayAsyncConfirmCallback? onConfirmAsync,
+    BootpayDefaultCallback? onDone,
+    int? requestType,
+  }) {
+    if (payload?.subscriptionId == null ||
+        payload?.subscriptionId?.length == 0) {
       payload?.subscriptionId = payload.orderId ?? "";
     }
 
@@ -139,28 +139,25 @@ class Bootpay extends BootpayApi {
         onConfirm: onConfirm,
         onConfirmAsync: onConfirmAsync,
         onDone: onDone,
-        requestType: requestType
-    );
+        requestType: requestType);
   }
 
-
   @override
-  void requestPassword(
-      {Key? key,
-        BuildContext? context,
-        Payload? payload,
-        bool? showCloseButton,
-        Widget? closeButton,
-        BootpayDefaultCallback? onCancel,
-        BootpayDefaultCallback? onError,
-        BootpayCloseCallback? onClose,
-        BootpayDefaultCallback? onIssued,
-        BootpayConfirmCallback? onConfirm,
-        BootpayAsyncConfirmCallback? onConfirmAsync,
-        BootpayDefaultCallback? onDone,
-        int? requestType}) {
-
-
+  void requestPassword({
+    Key? key,
+    BuildContext? context,
+    Payload? payload,
+    bool? showCloseButton,
+    Widget? closeButton,
+    BootpayDefaultCallback? onCancel,
+    BootpayDefaultCallback? onError,
+    BootpayCloseCallback? onClose,
+    BootpayDefaultCallback? onIssued,
+    BootpayConfirmCallback? onConfirm,
+    BootpayAsyncConfirmCallback? onConfirmAsync,
+    BootpayDefaultCallback? onDone,
+    int? requestType,
+  }) {
     _platform.requestPassword(
         context: context,
         payload: payload,
@@ -173,8 +170,7 @@ class Bootpay extends BootpayApi {
         onConfirm: onConfirm,
         onConfirmAsync: onConfirmAsync,
         onDone: onDone,
-        requestType: requestType
-    );
+        requestType: requestType);
   }
 
   @override
@@ -194,16 +190,14 @@ class Bootpay extends BootpayApi {
 
   // 회원 추적 코드
   @override
-  Future<http.Response> userTrace({
-    String? id,
-    String? email,
-    int? gender,
-    String? birth,
-    String? phone,
-    String? area,
-    String? applicationId
-  }) {
-
+  Future<http.Response> userTrace(
+      {String? id,
+      String? email,
+      int? gender,
+      String? birth,
+      String? phone,
+      String? area,
+      String? applicationId}) {
     return _platform.userTrace(
         id: id,
         email: email,
@@ -212,8 +206,7 @@ class Bootpay extends BootpayApi {
         phone: phone,
         area: area,
         applicationId: applicationId,
-        ver: BootpayConfig.VERSION
-    );
+        ver: BootpayConfig.VERSION);
   }
 
   // 페이지 추적 코드
@@ -225,20 +218,17 @@ class Bootpay extends BootpayApi {
     String? userId,
     List<StatItem>? items,
   }) {
-
     return _platform.pageTrace(
         url: url,
         pageType: pageType,
         userId: userId,
         items: items,
         applicationId: applicationId,
-        ver: BootpayConfig.VERSION
-    );
+        ver: BootpayConfig.VERSION);
   }
 
   @override
   void setLocale(String locale) {
-    // TODO: implement setLocale
     _platform.setLocale(locale);
   }
 

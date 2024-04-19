@@ -17,13 +17,9 @@ import 'package:bootpay_webview_flutter_wkwebview/bootpay_webview_flutter_wkwebv
 import 'bootpay.dart';
 import 'model/payload.dart';
 
-
 // 1. 웹앱을 대체하는 뷰를 활용한 샘플
 // 2. api 역할
 class BootpayWebView extends StatelessWidget {
-  // Payload;
-  // Event
-  // controller
   final Key? key;
   final Payload? payload;
   final BootpayDefaultCallback? onCancel;
@@ -38,42 +34,41 @@ class BootpayWebView extends StatelessWidget {
   bool? showCloseButton = false;
   Widget? closeButton;
   String? userAgent;
-  int? requestType = BootpayConstant.REQUEST_TYPE_PAYMENT; //1: 결제, 2:정기결제, 3: 본인인증
+  int? requestType =
+      BootpayConstant.REQUEST_TYPE_PAYMENT; //1: 결제, 2:정기결제, 3: 본인인증
 
-  final DebounceCloseController closeController = Get.put(DebounceCloseController());
+  final DebounceCloseController closeController =
+      Get.put(DebounceCloseController());
   late final WebViewController _controller;
   // final Completer<WebViewController> _controller = Completer<WebViewController>();
 
   final String INAPP_URL = 'https://webview.bootpay.co.kr/5.0.0-beta.25/';
 
-
   BootpayWebView(
       {this.key,
-        // this._controller,
-        this.payload,
-        this.showCloseButton,
-        this.onCancel,
-        this.onError,
-        this.onClose,
-        this.onIssued,
-        this.onConfirm,
-        this.onConfirmAsync,
-        this.onDone,
-        this.closeButton,
-        this.userAgent,
-        this.requestType
-      })
+      // this._controller,
+      this.payload,
+      this.showCloseButton,
+      this.onCancel,
+      this.onError,
+      this.onClose,
+      this.onIssued,
+      this.onConfirm,
+      this.onConfirmAsync,
+      this.onDone,
+      this.closeButton,
+      this.userAgent,
+      this.requestType})
       : super(key: key);
 
-
   void setLocale(String locale) {
-
     _controller.runJavaScript("Bootpay.setLocale('$locale')");
   }
 
   void transactionConfirm() {
-    String script = "Bootpay.confirm().then(function(confirmRes) { BootpayDone.postMessage(JSON.stringify(confirmRes)); }, function(confirmRes) { if (confirmRes.event === 'error') { BootpayError.postMessage(JSON.stringify(confirmRes)); } else if (confirmRes.event === 'cancel') { BootpayCancel.postMessage(JSON.stringify(confirmRes)); } })";
-    if(payload?.extra?.openType == 'redirect') {
+    String script =
+        "Bootpay.confirm().then(function(confirmRes) { BootpayDone.postMessage(JSON.stringify(confirmRes)); }, function(confirmRes) { if (confirmRes.event === 'error') { BootpayError.postMessage(JSON.stringify(confirmRes)); } else if (confirmRes.event === 'cancel') { BootpayCancel.postMessage(JSON.stringify(confirmRes)); } })";
+    if (payload?.extra?.openType == 'redirect') {
       script = "Bootpay.confirm();";
     }
 
@@ -81,24 +76,18 @@ class BootpayWebView extends StatelessWidget {
   }
 
   void removePaymentWindow() {
-    _controller.runJavaScript(
-        "Bootpay.dismiss();"
-    );
+    _controller.runJavaScript("Bootpay.dismiss();");
     // _controller.
     // _controller.
   }
-
-
 
   String confirm() {
     return "if (res.event === 'confirm') { if (window.BootpayConfirm && window.BootpayConfirm.postMessage) { BootpayConfirm.postMessage(JSON.stringify(res)); } }";
   }
 
-
   String done() {
     return "else if (res.event === 'done') { if (window.BootpayDone && window.BootpayDone.postMessage) { BootpayDone.postMessage(JSON.stringify(res)); } }";
   }
-
 
   String issued() {
     return "else if (res.event === 'issued') { if (window.BootpayIssued && window.BootpayIssued.postMessage) { BootpayIssued.postMessage(JSON.stringify(res)); } }";
@@ -124,13 +113,13 @@ class BootpayWebView extends StatelessWidget {
         mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
       );
     } else {
-      params = PlatformWebViewControllerCreationParams(
-      );
+      params = PlatformWebViewControllerCreationParams();
     }
 
-    final WebViewController controller = WebViewController.fromPlatformCreationParams(params);
+    final WebViewController controller =
+        WebViewController.fromPlatformCreationParams(params);
 
-    if(userAgent != null) {
+    if (userAgent != null) {
       controller.setUserAgent(userAgent!);
     }
 
@@ -148,16 +137,13 @@ class BootpayWebView extends StatelessWidget {
           onPageFinished: (String url) async {
             // debugPrint('Page finished loading: $url');
             if (url.startsWith(INAPP_URL)) {
-
               for (String script in await getBootpayJSBeforeContentLoaded()) {
                 // widget._controller.runJavaScript(javaScript)
                 _controller.runJavaScript(script);
-
               }
               _controller.runJavaScript(getBootpayJS());
               debugPrint(getBootpayJS());
             }
-
           },
           // onNavi
           onWebResourceError: (WebResourceError error) {
@@ -168,8 +154,9 @@ class BootpayWebView extends StatelessWidget {
             errorType: ${error.errorType}
             isForMainFrame: ${error.isForMainFrame}
                     ''');
-            if(error.errorCode == 3) { // SSL 인증서 에러, update 유도
-              if(error.description.contains("sslerror:")) {
+            if (error.errorCode == 3) {
+              // SSL 인증서 에러, update 유도
+              if (error.description.contains("sslerror:")) {
                 if (this.onError != null) {
                   this.onError!(error.description);
                 }
@@ -178,13 +165,13 @@ class BootpayWebView extends StatelessWidget {
             }
           },
           onNavigationRequest: (NavigationRequest request) {
-            if(request.url.contains("https://nid.naver.com")) {
-              _controller.runJavaScript("document.getElementById('back').remove()");
+            if (request.url.contains("https://nid.naver.com")) {
+              _controller
+                  .runJavaScript("document.getElementById('back').remove()");
             }
             return NavigationDecision.navigate;
           },
           // Navigation
-
         ),
       )
       ..addJavaScriptChannel(
@@ -227,9 +214,11 @@ class BootpayWebView extends StatelessWidget {
   }
 
   Widget platformWebViewWidget() {
-    if(_controller.platform is AndroidWebViewController && BootpayConfig.DISPLAY_WITH_HYBRID_COMPOSITION) {
+    if (_controller.platform is AndroidWebViewController &&
+        BootpayConfig.DISPLAY_WITH_HYBRID_COMPOSITION) {
       return WebViewWidget.fromPlatformCreationParams(
-        params: AndroidWebViewWidgetCreationParams.fromPlatformWebViewWidgetCreationParams(
+        params: AndroidWebViewWidgetCreationParams
+            .fromPlatformWebViewWidgetCreationParams(
           AndroidWebViewWidgetCreationParams(
             controller: _controller.platform,
           ),
@@ -237,9 +226,7 @@ class BootpayWebView extends StatelessWidget {
         ),
       );
     }
-    return WebViewWidget(
-        controller: _controller
-    );
+    return WebViewWidget(controller: _controller);
   }
 
   @override
@@ -249,28 +236,29 @@ class BootpayWebView extends StatelessWidget {
     return Stack(
       children: [
         platformWebViewWidget(),
-        if(showCloseButton ?? false)
-          closeButton != null ?
-          GestureDetector(
-            child: closeButton!,
-            onTap: () => clickCloseButton(),
-          ) :
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-              height: 40,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(child: Container()),
-                  IconButton(
-                    onPressed: () => clickCloseButton(),
-                    icon: Icon(Icons.close, size: 35.0, color: Colors.black54),
+        if (showCloseButton ?? false)
+          closeButton != null
+              ? GestureDetector(
+                  child: closeButton!,
+                  onTap: () => clickCloseButton(),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(child: Container()),
+                        IconButton(
+                          onPressed: () => clickCloseButton(),
+                          icon: Icon(Icons.close,
+                              size: 35.0, color: Colors.black54),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          )
+                )
       ],
     );
   }
@@ -281,13 +269,17 @@ extension BootpayMethod on BootpayWebView {
     List<String> result = [];
 
     if (BootpayConfig.IS_FORCE_WEB) {
-      result.add("Bootpay.setVersion('" + BootpayConfig.VERSION + "', 'flutter')");
+      result.add(
+          "Bootpay.setVersion('" + BootpayConfig.VERSION + "', 'flutter')");
     } else if (Platform.isAndroid) {
       result.add("Bootpay.setDevice('ANDROID');");
-      result.add("Bootpay.setVersion('" + BootpayConfig.VERSION + "', 'android_flutter')");
+      result.add("Bootpay.setVersion('" +
+          BootpayConfig.VERSION +
+          "', 'android_flutter')");
     } else if (Platform.isIOS) {
       result.add("Bootpay.setDevice('IOS');");
-      result.add("Bootpay.setVersion('" + BootpayConfig.VERSION + "', 'ios_flutter')");
+      result.add(
+          "Bootpay.setVersion('" + BootpayConfig.VERSION + "', 'ios_flutter')");
     }
 
     if (BootpayConfig.ENV == BootpayConfig.ENV_DEBUG) {
@@ -296,7 +288,7 @@ extension BootpayMethod on BootpayWebView {
       result.add("Bootpay.setEnvironmentMode('stage');");
     }
     String locale = payload?.extra?.locale ?? "";
-    if(locale.length > 0) {
+    if (locale.length > 0) {
       result.add("Bootpay.setLocale('$locale');");
     }
 
@@ -308,11 +300,11 @@ extension BootpayMethod on BootpayWebView {
 
   String getBootpayJS() {
     String requestMethod = 'requestPayment';
-    if(this.requestType == BootpayConstant.REQUEST_TYPE_SUBSCRIPT) {
+    if (this.requestType == BootpayConstant.REQUEST_TYPE_SUBSCRIPT) {
       requestMethod = 'requestSubscription';
-    } else if(this.requestType == BootpayConstant.REQUEST_TYPE_AUTH) {
+    } else if (this.requestType == BootpayConstant.REQUEST_TYPE_AUTH) {
       requestMethod = 'requestAuthentication';
-    } else if(this.requestType == BootpayConstant.REQUEST_TYPE_PASSWORD) {
+    } else if (this.requestType == BootpayConstant.REQUEST_TYPE_PASSWORD) {
       this.payload?.method = "카드간편";
     }
 
@@ -331,17 +323,15 @@ extension BootpayMethod on BootpayWebView {
     return script;
   }
 
-
-
   Future<String> getAnalyticsData() async {
     UserInfo.updateInfo();
     return "window.Bootpay.\$analytics.setAnalyticsData({uuid:'${await UserInfo.getBootpayUUID()}',sk:'${await UserInfo.getBootpaySK()}',sk_time:'${await UserInfo.getBootpayLastTime()}',time:'${DateTime.now().millisecondsSinceEpoch - await UserInfo.getBootpayLastTime()}'});";
   }
 
-
   void clickCloseButton() {
     if (this.onCancel != null)
-      this.onCancel!('{"action":"BootpayCancel","status":-100,"message":"사용자에 의한 취소"}');
+      this.onCancel!(
+          '{"action":"BootpayCancel","status":-100,"message":"사용자에 의한 취소"}');
   }
 
   void debounceClose() {
@@ -359,7 +349,6 @@ extension BootpayMethod on BootpayWebView {
 
 extension BootpayCallback on BootpayWebView {
   Future<void> goConfirmEvent(JavaScriptMessage message) async {
-
     print("goConfirmEvent : ${this.onConfirm}, ${this.onConfirmAsync}");
 
     if (this.onConfirm != null) {
@@ -367,7 +356,7 @@ extension BootpayCallback on BootpayWebView {
       if (goTransactionConfirm) {
         transactionConfirm();
       }
-    } else if(this.onConfirmAsync != null) {
+    } else if (this.onConfirmAsync != null) {
       bool goTransactionConfirm = await this.onConfirmAsync!(message.message);
       if (goTransactionConfirm) {
         transactionConfirm();
@@ -376,28 +365,24 @@ extension BootpayCallback on BootpayWebView {
   }
 
   void onProgressShow(bool isShow) {
-    if(this.payload?.extra?.openType != 'redirect' && isShow) {
-
+    if (this.payload?.extra?.openType != 'redirect' && isShow) {
     } else {
-      if(this.onProgressShow != null) {
+      if (this.onProgressShow != null) {
         this.onProgressShow!(isShow);
       }
     }
   }
 
-
   Future<void> onCancelJS(JavaScriptMessage message) async {
     onProgressShow(false);
 
-    if (this.onCancel != null)
-      this.onCancel!(message.message);
+    if (this.onCancel != null) this.onCancel!(message.message);
   }
 
   Future<void> onErrorJS(JavaScriptMessage message) async {
     onProgressShow(false);
 
-    if (this.onError != null)
-      this.onError!(message.message);
+    if (this.onError != null) this.onError!(message.message);
   }
 
   Future<void> onCloseJS(JavaScriptMessage message) async {
@@ -406,16 +391,13 @@ extension BootpayCallback on BootpayWebView {
 
   Future<void> onIssuedJS(JavaScriptMessage message) async {
     onProgressShow(false);
-    if (this.onIssued != null)
-      this.onIssued!(message.message);
+    if (this.onIssued != null) this.onIssued!(message.message);
   }
-
 
   Future<void> onConfirmJS(JavaScriptMessage message) async {
     onProgressShow(true);
     await goConfirmEvent(message);
   }
-
 
   Future<void> onDoneJS(JavaScriptMessage message) async {
     onProgressShow(false);
@@ -425,7 +407,7 @@ extension BootpayCallback on BootpayWebView {
   Future<void> onRedirectJS(JavaScriptMessage message) async {
     final data = json.decode(message.message);
 
-    switch(data["event"]) {
+    switch (data["event"]) {
       case "cancel":
         onProgressShow(false);
         if (this.onCancel != null) this.onCancel!(message.message);
@@ -434,7 +416,7 @@ extension BootpayCallback on BootpayWebView {
       case "error":
         onProgressShow(false);
         if (this.onError != null) this.onError!(message.message);
-        if(this.payload?.extra?.displayErrorResult != true) {
+        if (this.payload?.extra?.displayErrorResult != true) {
           debounceClose();
         }
         break;
@@ -446,7 +428,7 @@ extension BootpayCallback on BootpayWebView {
         onProgressShow(false);
 
         if (this.onIssued != null) this.onIssued!(message.message);
-        if(this.payload?.extra?.displaySuccessResult != true) {
+        if (this.payload?.extra?.displaySuccessResult != true) {
           debounceClose();
         }
         break;
@@ -457,11 +439,11 @@ extension BootpayCallback on BootpayWebView {
       case "done":
         onProgressShow(false);
         if (this.onDone != null) this.onDone!(message.message);
-        if(this.payload?.extra?.displaySuccessResult != true) {
+        if (this.payload?.extra?.displaySuccessResult != true) {
           debounceClose();
         } else {
           final content = json.decode(data["data"]);
-          if(content["method_origin_symbol"] == "card_rebill_rest") {
+          if (content["method_origin_symbol"] == "card_rebill_rest") {
             debounceClose();
           }
         }
