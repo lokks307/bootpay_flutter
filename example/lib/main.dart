@@ -1,6 +1,8 @@
 import 'package:bootpay/bootpay.dart';
 import 'package:bootpay/config/bootpay_config.dart';
-import 'package:bootpay/model/browser_open_type.dart';
+import 'package:bootpay/constant/browser_open_type.dart';
+import 'package:bootpay/constant/browser_type.dart';
+import 'package:bootpay/model/browser.dart';
 import 'package:bootpay/model/extra.dart';
 import 'package:bootpay/model/item.dart';
 import 'package:bootpay/model/payload.dart';
@@ -329,7 +331,10 @@ class SecondRoute extends StatelessWidget {
       payload.extra?.openType = 'iframe';
     }
     payload.extra?.browserOpenType = [
-      BrowserOpenType.fromJson({"browser": "naver", "open_type": 'popup'}),
+      Browser(
+        browserType: BrowserType.naver,
+        browserOpenType: BrowserOpenType.popup,
+      )
     ];
 
     // print('popup');

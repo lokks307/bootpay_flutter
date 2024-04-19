@@ -99,7 +99,12 @@ class _BootpayAppPageState extends State<BootpayAppPage> {
           padding: EdgeInsets.all(padding),
           child: widget.webView!,
         ),
-        if (isProgressShow) CircularProgressIndicator(color: Colors.black)
+        if (isProgressShow)
+          Positioned.fill(
+            child: Center(
+              child: CircularProgressIndicator(color: Colors.black),
+            ),
+          )
       ],
     );
   }
