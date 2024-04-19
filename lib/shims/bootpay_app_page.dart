@@ -7,9 +7,10 @@ import '../bootpay_webview.dart';
 import '../controller/debounce_close_controller.dart';
 
 class BootpayAppPage extends StatefulWidget {
-  BootpayWebView? webView;
-  double? padding;
-  BootpayAppPage(this.webView, this.padding);
+  const BootpayAppPage(this.webView, this.padding);
+
+  final BootpayWebView? webView;
+  final double? padding;
 
   @override
   _BootpayAppPageState createState() => _BootpayAppPageState();
@@ -22,18 +23,16 @@ class _BootpayAppPageState extends State<BootpayAppPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    // closeController.isBootpayShow = true;
     super.initState();
 
-    // closeController.isFireCloseEvent = false;
-    // closeController.isDebounceShow = true;
+    closeController.isFireCloseEvent = false;
+    closeController.isDebounceShow = true;
 
-    // widget.webView?.onProgressShow = (isShow) {
-    //   setState(() {
-    //     isProgressShow = isShow;
-    //   });
-    // };
+    widget.webView?.onProgressShow = (isShow) {
+      setState(() {
+        isProgressShow = isShow;
+      });
+    };
   }
 
   clickCloseButton() {
@@ -57,54 +56,51 @@ class _BootpayAppPageState extends State<BootpayAppPage> {
 
   @override
   Widget build(BuildContext context) {
-    double paddingValue = widget.padding ?? 0;
-
-    // if (Platform.isAndroid) {
-    //   return WillPopScope(
-    //     child: Scaffold(
-    //         body: SafeArea(
-    //       child: Container(
-    //           color: Colors.black26,
-    //           child: Padding(
-    //             padding: EdgeInsets.all(paddingValue),
-    //             child: widget.webView ?? Container(),
-    //           )),
-    //     )),
-    //     onWillPop: () async {
-    //       DateTime now = DateTime.now();
-    //       if (now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
-    //         currentBackPressTime = now;
-    //         Fluttertoast.showToast(msg: "\'뒤로\' 버튼을 한번 더 눌러주세요.");
-    //         return Future.value(false);
-    //       }
-    //       // bootpayClose();
-    //       return Future.value(true);
-    //     },
-    //   );
-    // } else {
     return Scaffold(
-        body: SafeArea(
-      child: Stack(
-        children: [
-          Container(
-              color: Colors.black26,
-              child: Padding(
-                padding: EdgeInsets.all(paddingValue),
-                child: widget.webView!,
-              )),
-          // isProgressShow == false
-          //     ? Container()
-          //     : Container(
-          //         width: MediaQuery.of(context).size.width,
-          //         height: MediaQuery.of(context).size.height,
-          //         color: Colors.black12,
-          //         child: Center(
-          //             child: CircularProgressIndicator(
-          //           color: Colors.white,
-          //         )))
-        ],
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: _buildContent(),
       ),
-    ));
-    // }
+    );
+  }
+
+  Widget _buildContent() {
+    double paddingValue = widget.padding ?? 0;
+    if (Platform.isAndroid) {
+      return _buildAndroidView(paddingValue);
+    } else if (Platform.isIOS) {
+      return _buildIOSView(paddingValue);
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildAndroidView(double padding) {
+    return WillPopScope(
+      onWillPop: () async {
+        DateTime now = DateTime.now();
+        if (now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+          currentBackPressTime = now;
+          Fluttertoast.showToast(msg: "\'뒤로\' 버튼을 한번 더 눌러주세요.");
+          return Future.value(false);
+        }
+        return Future.value(true);
+      },
+      child: Padding(
+        padding: EdgeInsets.all(padding),
+        child: widget.webView ?? Container(),
+      ),
+    );
+  }
+
+  Widget _buildIOSView(double padding) {
+    return Stack(
+      children: [
+        Padding(
+          padding: EdgeInsets.all(padding),
+          child: widget.webView!,
+        ),
+        if (isProgressShow) CircularProgressIndicator(color: Colors.black)
+      ],
+    );
   }
 }
