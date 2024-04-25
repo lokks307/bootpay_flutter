@@ -260,7 +260,7 @@ class SecondRoute extends StatelessWidget {
     item1.name = "미키 '마우스"; // 주문정보에 담길 상품명
     item1.qty = 1; // 해당 상품의 주문 수량
     item1.id = "ITEM_CODE_MOUSE"; // 해당 상품의 고유 키
-    item1.price = 500; // 상품의 가격
+    item1.price = 1; // 상품의 가격
 
     Item item2 = Item();
     item2.name = "키보드"; // 주문정보에 담길 상품명
@@ -279,7 +279,7 @@ class SecondRoute extends StatelessWidget {
     // payload.method = '네이버페이';
     // payload.methods = ['카드', '휴대폰', '가상계좌', '계좌이체', '카카오페이'];
     payload.orderName = "테스트 상품"; //결제할 상품명
-    payload.price = 1000.0; //정기결제시 0 혹은 주석
+    payload.price = 501.0; //정기결제시 0 혹은 주석
 
     payload.orderId = DateTime.now()
         .millisecondsSinceEpoch
@@ -344,6 +344,8 @@ class SecondRoute extends StatelessWidget {
     payload.extra?.directCardCompany = "현대";
     payload.extra?.directCardQuota = '00'; //directCardCompany 일 경우 할부정보는 필수
     // payload.method = "네이버페이";
+    // payload.pg = PGType.nicePay.label;
+    // payload.extra?.directCardCompany = BootpayCardType.hyundai.label;
 
     // BootpayConfig.IS_FORCE_WEB = true;
     // BootpayConfig.DISPLAY_WITH_HYBRID_COMPOSITION = true;

@@ -38,7 +38,6 @@ class Payload {
   User? user = User();
   List<Item>? items = [];
 
-  // Payload();
   Payload({
     this.webApplicationId,
     this.androidApplicationId,
@@ -83,12 +82,10 @@ class Payload {
 
     metadata = json["metadata"];
 
-
     // accountExpireAt = json["account_expire_at"];
     // showAgreeWindow = json["show_agree_window"];
     extra = Extra.fromJson(json["extra"]);
   }
-
 
   //web에서 사용됨
   Map<String, dynamic> toJson() {
@@ -108,30 +105,34 @@ class Payload {
       // 'show_agree_window': showAgreeWindow,
       'user_token': userToken
     };
-    if(this.methods != null && this.methods!.length > 0) {
-      if(kIsWeb) result['method'] = this.methods;
-      else result['method'] = getMethodValue();
-    } else if(this.method != null && this.method!.length > 0) {
+    if (this.methods != null && this.methods!.length > 0) {
+      if (kIsWeb)
+        result['method'] = this.methods;
+      else
+        result['method'] = getMethodValue();
+    } else if (this.method != null && this.method!.length > 0) {
       result['method'] = this.method;
     }
-    if(extra != null) {
+    if (extra != null) {
       result['extra'] = extra!.toJson();
     }
-    if(user != null) {
+    if (user != null) {
       result['user'] = user!.toJson();
     }
-    if(items!.length > 0) {
+    if (items!.length > 0) {
       result['items'] = items!.map((e) => e.toJson()).toList();
     }
 
     return result;
   }
 
-
   getApplicationId() {
-    if(kIsWeb || BootpayConfig.IS_FORCE_WEB) return this.webApplicationId;
-    else if(Platform.isIOS) return this.iosApplicationId;
-    else return this.androidApplicationId;
+    if (kIsWeb || BootpayConfig.IS_FORCE_WEB)
+      return this.webApplicationId;
+    else if (Platform.isIOS)
+      return this.iosApplicationId;
+    else
+      return this.androidApplicationId;
   }
 
   //android, ios에서 사용됨
@@ -144,11 +145,12 @@ class Payload {
 
     void addPart(String key, dynamic value, {bool? isOriginal}) {
       if (value != null) {
-        if(isOriginal == true) {
+        if (isOriginal == true) {
           parts.add("$key: $value");
         } else {
           // String formattedValue = value is String ? "'${value.replaceAll("'", "\\'")}'" : value.toString(
-          String formattedValue = value is String ? "'${value.queryReplace()}'" : value.toString();
+          String formattedValue =
+              value is String ? "'${value.queryReplace()}'" : value.toString();
           parts.add("$key: $formattedValue");
         }
       }
@@ -172,18 +174,15 @@ class Payload {
     addPart('user', user.toString(), isOriginal: true);
     addPart('items', getItems(), isOriginal: true);
 
-
     return "{${parts.join(", ")}}";
   }
 
-
   String getMethodValue() {
-
-    if(this.methods == null || this.methods!.isEmpty) {
+    if (this.methods == null || this.methods!.isEmpty) {
       return "'${this.method ?? ''}'";
     } else {
       List<String> result = [];
-      for(String method in this.methods!) {
+      for (String method in this.methods!) {
         result.add("\'$method\'");
       }
       return "[${result.join(",")}]";
@@ -204,8 +203,8 @@ class Payload {
   String getItems() {
     List<String> result = [];
 
-    if(this.items != null) {
-      for(Item item in this.items!) {
+    if (this.items != null) {
+      for (Item item in this.items!) {
         result.add(item.toString());
       }
     }
