@@ -1,4 +1,5 @@
 enum PGType {
+  hecto,
   inicis,
   kcp,
   nicePay,
@@ -22,6 +23,8 @@ enum PGType {
 extension PGTypeExt on PGType {
   String get label {
     switch (this) {
+      case PGType.hecto:
+        return 'hecto';
       case PGType.inicis:
         return 'inicis';
       case PGType.kcp:
