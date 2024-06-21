@@ -39,9 +39,9 @@ class _BootpayAppPageState extends State<BootpayAppPage> {
   }
 
   _onTryCancelPayment() {
-    if (widget.webView?.onCancel != null)
-      widget.webView?.onCancel!(
-          '{"action":"BootpayCancel","status":-100,"message":"사용자에 의한 취소"}');
+    // if (widget.webView?.onCancel != null)
+    //   widget.webView?.onCancel!(
+    //       '{"action":"BootpayCancel","status":-100,"message":"사용자에 의한 취소"}');
     // if (widget.webView?.onClose != null) widget.webView?.onClose!();
     widget.onPopInvoked?.call();
   }
