@@ -59,7 +59,7 @@ class _BootpayAppPageState extends State<BootpayAppPage> {
       body: PopScope(
         canPop: false,
         onPopInvoked: (popInvoked) {
-          if (!popInvoked) return;
+          if (popInvoked) return;
           print('onPopInvoked');
           clickCloseButton();
         },
