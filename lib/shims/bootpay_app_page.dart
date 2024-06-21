@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../bootpay_webview.dart';
@@ -58,46 +56,27 @@ class _BootpayAppPageState extends State<BootpayAppPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: _buildContent(),
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (popInvoked) {
+          if (!popInvoked) return;
+          print('onPopInvoked');
+          clickCloseButton();
+        },
+        child: SafeArea(
+          child: _buildContent(),
+        ),
       ),
     );
   }
 
   Widget _buildContent() {
-    double paddingValue = widget.padding ?? 0;
-    if (Platform.isAndroid) {
-      return _buildAndroidView(paddingValue);
-    } else if (Platform.isIOS) {
-      return _buildIOSView(paddingValue);
-    }
-    return const SizedBox.shrink();
-  }
-
-  Widget _buildAndroidView(double padding) {
-    return WillPopScope(
-      onWillPop: () async {
-        DateTime now = DateTime.now();
-        if (now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
-          currentBackPressTime = now;
-          Fluttertoast.showToast(msg: "\'뒤로\' 버튼을 한번 더 눌러주세요.");
-          return Future.value(false);
-        }
-        return Future.value(true);
-      },
-      child: Padding(
-        padding: EdgeInsets.all(padding),
-        child: widget.webView ?? Container(),
-      ),
-    );
-  }
-
-  Widget _buildIOSView(double padding) {
+    double padding = widget.padding ?? 0;
     return Stack(
       children: [
         Padding(
           padding: EdgeInsets.all(padding),
-          child: widget.webView!,
+          child: widget.webView ?? Container(),
         ),
         if (isProgressShow)
           Positioned.fill(
