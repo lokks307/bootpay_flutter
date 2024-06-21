@@ -39,6 +39,7 @@ class BootpayPlatform extends BootpayApi {
     String? userAgent,
     double? padding,
     int? requestType,
+    VoidCallback? onPopInvoked,
   }) async {
     BootpayWebView webView = BootpayWebView(
       payload: payload,
@@ -60,7 +61,13 @@ class BootpayPlatform extends BootpayApi {
 
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => BootpayAppPage(webView, padding)),
+      MaterialPageRoute(
+        builder: (context) => BootpayAppPage(
+          webView,
+          padding,
+          onPopInvoked,
+        ),
+      ),
     );
   }
 
@@ -81,23 +88,26 @@ class BootpayPlatform extends BootpayApi {
     String? userAgent,
     double? webViewPadding,
     int? requestType,
+    VoidCallback? onPopInvoked,
   }) {
     goBootpayRequest(
-        key: key,
-        context: context,
-        payload: payload,
-        showCloseButton: showCloseButton,
-        closeButton: closeButton,
-        onCancel: onCancel,
-        onError: onError,
-        onClose: onClose,
-        onIssued: onIssued,
-        onConfirm: onConfirm,
-        onConfirmAsync: onConfirmAsync,
-        onDone: onDone,
-        userAgent: userAgent,
-        padding: webViewPadding,
-        requestType: BootpayConstant.REQUEST_TYPE_PAYMENT);
+      key: key,
+      context: context,
+      payload: payload,
+      showCloseButton: showCloseButton,
+      closeButton: closeButton,
+      onCancel: onCancel,
+      onError: onError,
+      onClose: onClose,
+      onIssued: onIssued,
+      onConfirm: onConfirm,
+      onConfirmAsync: onConfirmAsync,
+      onDone: onDone,
+      userAgent: userAgent,
+      padding: webViewPadding,
+      requestType: BootpayConstant.REQUEST_TYPE_PAYMENT,
+      onPopInvoked: onPopInvoked,
+    );
   }
 
   @override

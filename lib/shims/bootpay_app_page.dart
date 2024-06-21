@@ -5,10 +5,15 @@ import '../bootpay_webview.dart';
 import '../controller/debounce_close_controller.dart';
 
 class BootpayAppPage extends StatefulWidget {
-  const BootpayAppPage(this.webView, this.padding);
+  const BootpayAppPage(
+    this.webView,
+    this.padding,
+    this.onPopInvoked,
+  );
 
   final BootpayWebView? webView;
   final double? padding;
+  final VoidCallback? onPopInvoked;
 
   @override
   _BootpayAppPageState createState() => _BootpayAppPageState();
@@ -33,11 +38,12 @@ class _BootpayAppPageState extends State<BootpayAppPage> {
     };
   }
 
-  clickCloseButton() {
+  _onTryCancelPayment() {
     if (widget.webView?.onCancel != null)
       widget.webView?.onCancel!(
           '{"action":"BootpayCancel","status":-100,"message":"사용자에 의한 취소"}');
-    if (widget.webView?.onClose != null) widget.webView?.onClose!();
+    // if (widget.webView?.onClose != null) widget.webView?.onClose!();
+    widget.onPopInvoked?.call();
   }
 
   void bootpayClose() {
@@ -61,7 +67,7 @@ class _BootpayAppPageState extends State<BootpayAppPage> {
         onPopInvoked: (popInvoked) {
           if (popInvoked) return;
           print('onPopInvoked');
-          clickCloseButton();
+          _onTryCancelPayment();
         },
         child: SafeArea(
           child: _buildContent(),

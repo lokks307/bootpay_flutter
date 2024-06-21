@@ -54,20 +54,23 @@ class Bootpay extends BootpayApi {
     BootpayDefaultCallback? onDone,
     String? userAgent,
     int? requestType,
+    VoidCallback? onPopInvoked,
   }) {
     _platform.requestPayment(
-        context: context,
-        payload: payload,
-        showCloseButton: showCloseButton,
-        closeButton: closeButton,
-        onCancel: onCancel,
-        onError: onError,
-        onClose: onClose,
-        onIssued: onIssued,
-        onConfirm: onConfirm,
-        onConfirmAsync: onConfirmAsync,
-        onDone: onDone,
-        requestType: requestType);
+      context: context,
+      payload: payload,
+      showCloseButton: showCloseButton,
+      closeButton: closeButton,
+      onCancel: onCancel,
+      onError: onError,
+      onClose: onClose,
+      onIssued: onIssued,
+      onConfirm: onConfirm,
+      onConfirmAsync: onConfirmAsync,
+      onDone: onDone,
+      requestType: requestType,
+      onPopInvoked: onPopInvoked,
+    );
   }
 
   @override
